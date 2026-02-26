@@ -1,1 +1,75 @@
+LOGIN PAGE  CODE :
+<!doctype html>
+<html>
+  <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
 
+      <input type="email" id="email" placeholder="Email" />
+
+      <input type="password" id="password" placeholder="Password" />
+
+      <select id="role">
+        <option value="employee">Employee</option>
+        <option value="manager">Manager</option>
+      </select>
+
+      <button onclick="login()">Login</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+EMPLOYEE PAGE CODE :
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Apply Leave</h2>
+
+  <select id="leaveType">
+    <option>Vacation</option>
+    <option>Sick</option>
+    <option>Casual</option>
+  </select>
+
+  <input type="date" id="startDate">
+  <input type="date" id="endDate">
+  <textarea id="reason" placeholder="Reason"></textarea>
+
+  <button onclick="applyLeave()">Submit Leave</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+MANAGER PAGE CODE :
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manager Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Leave Requests</h2>
+
+  <p>Employee: Kumar</p>
+  <p>Leave: Vacation (2026-01-02 to 2026-02-28)</p>
+
+  <button class="approve-btn" onclick="approve()">Approve</button>
+  <button onclick="reject()">Reject</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
