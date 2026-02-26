@@ -1,0 +1,161 @@
+ Leave Management Java
+
+•	DBConnection.java
+•	Leave.java
+•	 LeaveDAO.java
+•	 Main.java
+
+DBConnection.java :
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnection {
+
+    public static Connection getConnection() {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/leave_management","root",
+ "password");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return con;
+    }
+}
+Leave.java:
+public class Leave {
+    private int empId;
+    private String leaveType;
+    private String startDate;
+    private String endDate;
+    private String reason;
+    private String status;
+
+    public int getEmpId() { 
+        return empId; 
+     }
+    public void setEmpId(int empId) { 
+          this.empId = empId; 
+     }
+
+    public String getLeaveType() { 
+        return leaveType; 
+     }
+    public void setLeaveType(String leaveType) { 
+        this.leaveType = leaveType; 
+     }
+
+    public String getStartDate() { 
+     return startDate; 
+    }
+    public void setStartDate(String startDate) {
+         this.startDate = startDate;
+     }
+
+    public String getEndDate() { 
+      return endDate; 
+      }
+    public void setEndDate(String endDate) { 
+    this.endDate = endDate; 
+     }
+
+    public String getReason() {
+        return reason; 
+      }
+    public void setReason(String reason) { 
+       this.reason = reason; 
+       }
+
+    public String getStatus() { 
+       return status; 
+     }
+    public void setStatus(String status) { 
+         this.status = status; 
+}
+}
+LeaveDAO.java (CRUD Operations) :
+CREATE (Apply Leave) :
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+public class LeaveDAO {
+    public void applyLeave(Leave l) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "INSERT INTO leave_request(emp_id,leave_type,start_date,end_date,reason,status) VALUES(?,?,?,?,?,?)";
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, l.getEmpId());
+            ps.setString(2, l.getLeaveType());
+            ps.setString(3, l.getStartDate());
+            ps.setString(4, l.getEndDate());
+            ps.setString(5, l.getReason());
+            ps.setString(6, "PENDING");
+
+            ps.executeUpdate();
+            System.out.println("Leave Applied");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+READ (View All Leaves):
+    public void viewLeaves() {
+        try {
+            Connection con = DBConnection.getConnection();
+            var rs = con.createStatement().executeQuery("SELECT * FROM leave_request");
+            while (rs.next()) {
+                System.out.println(rs.getInt("leave_id") + " " +rs.getInt("emp_id") + " " +
+                    rs.getString("leave_type") + " " +rs.getString("status") );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+UPDATE (Approve Leave) :
+    public void approveLeave(int leaveId) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE leave_request SET status=? WHERE leave_id=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, "APPROVED");
+            ps.setInt(2, leaveId);
+            ps.executeUpdate();
+
+            System.out.println("Leave Approved");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+DELETE (Delete Leave) :
+    public void deleteLeave(int leaveId) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "DELETE FROM leave_request WHERE leave_id=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, leaveId);
+            ps.executeUpdate();
+            System.out.println("Leave Deleted");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+Main.java
+public class Main {
+
+    public static void main(String[] args) {
+        LeaveDAO dao = new LeaveDAO();
+        Leave l = new Leave();
+        l.setEmpId(1);
+        l.setLeaveType("Vacation");
+        l.setStartDate("2026-02-01");
+        l.setEndDate("2026-02-03");
+        l.setReason("Personal");
+        dao.applyLeave(l);      // CREATE
+        dao.viewLeaves();       // READ
+        dao.approveLeave(1);    // UPDATE
+        dao.deleteLeave(2);     // DELETE
+    }
+}
